@@ -1,0 +1,27 @@
+<div id="login-box">
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2 flex md-truncate>Customer Login</h2>
+    </div>
+  </md-toolbar>
+  <div layout-gt-sm="row">
+    <md-input-container flex-gt-sm>
+      <label>Email ID</label>
+      <input ng-model="email" />
+    </md-input-container>
+  </div>
+  <div layout-gt-sm="row">
+    <md-input-container flex-gt-sm>
+      <label>Password</label>
+      <input ng-model="password" />
+    </md-input-container>
+  </div>
+  <div layout-gt-sm="row" layout-align="end center">
+    <md-button md-no-ink class="md-primary">Sign UP</md-button>
+    <md-button class="md-raised md-primary" ng-click="login()">Login</md-button>
+  </div>
+  <div layout-gt-sm="row">
+    <md-button>Forgot Password!</md-button>
+    <md-button>Recover here</md-button>
+  </div>
+</div>
