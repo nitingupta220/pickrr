@@ -1,6 +1,10 @@
 var app = angular.module("pickrrApp", ["ngMaterial", "ngMessages", "ngRoute"]);
 app.config(function ($routeProvider, $locationProvider) {
-  $locationProvider.html5Mode({ enabled: true });
+  $locationProvider.html5Mode({
+    enabled: true,
+    requireBase: false,
+    rewriteLinks: false,
+  });
   $routeProvider
     .when("/", {
       templateUrl: "public/login.html",
@@ -9,9 +13,12 @@ app.config(function ($routeProvider, $locationProvider) {
     .when("/orders", {
       templateUrl: "public/orders.html",
       controller: "ordersController",
+    })
+    .otherwise({
+      redirectTo: "/",
     });
 });
-app.controller("loginController", function ($scope, $http, $location) {
+app.controller("loginController", function ($scope, $http, $location, $window) {
   $scope.email;
   $scope.password;
   var headers = {
