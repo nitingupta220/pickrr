@@ -2,7 +2,7 @@
   <h1>Filter Orders</h1>
   <md-content>
     <md-tabs md-dynamic-height md-border-bottom>
-      <md-tab label="NOT PICKED">
+      <md-tab label="Fulfilled">
         <md-content class="md-padding">
           <h1 class="md-display-2">Tab One</h1>
           <table class="table table-bordered table-hover">
@@ -12,71 +12,116 @@
                 <th scope="col">Pickrr ID</th>
                 <th scope="col">Placed Date</th>
                 <th scope="col">Tracking ID</th>
-                <th scope="col">Destination</th>
-                <th scope="col">Current Status</th>
                 <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <tr ng-repeat="order in data.porders">
                 <th scope="row">
-                  <md-checkbox ng-model="data.cb1" aria-label="Checkbox 1">
+                  <md-checkbox ng-model="active.value" aria-label="Checkbox 1">
                   </md-checkbox>
                 </th>
-                <td>#9526696</td>
-                <td>07 Feb 2020, 15:23</td>
-                <td>#6954751234</td>
-                <td>indu ramkr - 400072</td>
-                <td>Cancelled</td>
+                <td>{{order.shopify_order_id}}</td>
+                <td>{{order.created_at}}</td>
+                <td>{{order.tracking_number}}</td>
                 <td>
-                  <md-button class="md-raised">Track</md-button>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">
-                  <md-checkbox ng-model="data.cb1" aria-label="Checkbox 1">
-                  </md-checkbox>
-                </th>
-                <td>#9526696</td>
-                <td>07 Feb 2020, 15:23</td>
-                <td>#6954751234</td>
-                <td>indu ramkr - 400072</td>
-                <td>Cancelled</td>
-                <td>
-                  <md-button class="md-raised">Track</md-button>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">
-                  <md-checkbox ng-model="data.cb1" aria-label="Checkbox 1">
-                  </md-checkbox>
-                </th>
-                <td>#9526696</td>
-                <td>07 Feb 2020, 15:23</td>
-                <td>#6954751234</td>
-                <td>indu ramkr - 400072</td>
-                <td>Cancelled</td>
-                <td>
-                  <md-button class="md-raised">Track</md-button>
+                  <md-button
+                    class="md-raised"
+                    ng-href="{{order.tracking_url}}"
+                    target="_blank"
+                  >
+                    Track
+                  </md-button>
                 </td>
               </tr>
             </tbody>
           </table>
         </md-content>
       </md-tab>
-      <md-tab label="LIVE">
+      <md-tab label="Not Fulfilled">
         <md-content class="md-padding">
-          <h1 class="md-display-2">Tab Two</h1>
-          <p>
-            Morbi viverra, ante vel aliquet tincidunt, leo dolor pharetra quam,
-            at semper massa orci nec magna. Donec posuere nec sapien sed
-            laoreet. Etiam cursus nunc in condimentum facilisis. Etiam in tempor
-            tortor. Vivamus faucibus egestas enim, at convallis diam pulvinar
-            vel. Cras ac orci eget nisi maximus cursus. Nunc urna libero,
-            viverra sit amet nisl at, hendrerit tempor turpis. Maecenas
-            facilisis convallis mi vel tempor. Nullam vitae nunc leo. Cras sed
-            nisl consectetur, rhoncus sapien sit amet, tempus sapien.
-          </p>
+          <div class="container" ng-if="orderList.length > 0">
+            <div class="row">
+              <div class="col-sm">
+                <div class="dropdown">
+                  <button
+                    class="btn btn-light dropdown-toggle"
+                    type="button"
+                    id="dropdownMenuButton"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    Select Account
+                  </button>
+                  <div
+                    class="dropdown-menu"
+                    aria-labelledby="dropdownMenuButton"
+                  >
+                    <a class="dropdown-item" href="#">Account 1</a>
+                    <a class="dropdown-item" href="#">Account 2</a>
+                    <a class="dropdown-item" href="#">Account 3</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm mt-2">
+                <md-checkbox aria-label="Checkbox 1">
+                  Surface
+                </md-checkbox>
+              </div>
+              <div class="col-sm mt-2">
+                <md-checkbox aria-label="Checkbox 1">
+                  NDD
+                </md-checkbox>
+              </div>
+              <div class="col-sm mt-2">
+                <md-checkbox aria-label="Checkbox 1">
+                  DG
+                </md-checkbox>
+              </div>
+              <div class="col-sm text-right">
+                <md-button
+                  class="md-raised mt-1 mb-3 mr-3 text-right"
+                  target="_blank"
+                >
+                  Place Order
+                </md-button>
+              </div>
+            </div>
+          </div>
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Select</th>
+                <th scope="col">Name</th>
+                <th scope="col">Order ID</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Destination</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="order in data.uorders">
+                <th scope="row">
+                  <md-checkbox
+                    ng-model="active.value"
+                    aria-label="Checkbox 1"
+                    ng-change="pushToArray(order, active.value)"
+                  >
+                  </md-checkbox>
+                </th>
+                <td>{{order.pickrr_dict.from_name}}</td>
+                <td>{{order.pickrr_dict.client_order_id}}</td>
+                <td>{{order.pickrr_dict.quantity}}</td>
+                <td>{{order.pickrr_dict.to_address}}</td>
+                <td>
+                  <md-button class="md-raised" target="_blank">
+                    Track
+                  </md-button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </md-content>
       </md-tab>
     </md-tabs>

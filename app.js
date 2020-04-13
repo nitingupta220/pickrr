@@ -25,14 +25,14 @@ app.controller("loginController", function ($scope, $http, $location) {
     "Content-Type": "application/x-www-form-urlencoded",
   };
   $scope.login = function () {
-    console.log("creds", $scope.email, $scope.password);
+    // console.log("creds", $scope.email, $scope.password);
     $http({
       method: "POST",
       url: "http://pickrrtesting.com/api/register-user-platform-plugin/",
       headers: headers,
       data: { shop_name: $scope.email, shop_token: $scope.password },
     }).then(function (response) {
-      console.log("response==>", response.data);
+      // console.log("response==>", response.data);
       if (response.data.err === null) {
         $location.path("/orders");
       } else {
@@ -50,11 +50,30 @@ app.controller("ordersController", function ($scope, $http) {
     "Access-Control-Allow-Origin": "*",
   };
 
+  // $http({
+  //   method: "GET",
+  //   url: "https://pickrr.herokuapp.com/fetch-shop-orders/harish-30/?days=2",
+  //   headers: headers,
+  // }).then(function (response) {
+  //   console.log("response==>", response.data);
+  // });
   $http({
     method: "GET",
-    url: "https://pickrr.herokuapp.com/fetch-shop-orders/harish-30/?days=2",
+    url: "data.json",
     headers: headers,
   }).then(function (response) {
-    console.log("response==>", response.data);
+    $scope.data = response.data.orders;
+    // console.log("response==>", $scope.data);
   });
+
+  $scope.orderList = [];
+  $scope.pushToArray = function (data, value) {
+    if (value) {
+      $scope.orderList.push(data);
+      console.log("orderList", $scope.orderList);
+    } else {
+      $scope.orderList.splice($scope.orderList.indexOf(data), 1);
+      console.log("orderList", $scope.orderList);
+    }
+  };
 });
