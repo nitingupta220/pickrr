@@ -18,7 +18,7 @@ app.config(function ($routeProvider, $locationProvider) {
       redirectTo: "/",
     });
 });
-app.controller("loginController", function ($scope, $http, $location, $window) {
+app.controller("loginController", function ($scope, $http, $location) {
   $scope.email;
   $scope.password;
   var headers = {
