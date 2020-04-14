@@ -1,5 +1,9 @@
 var app = angular.module("pickrrApp", ["ngMaterial", "ngMessages", "ngRoute"]);
-app.config(function ($routeProvider, $locationProvider) {
+app.config(function ($routeProvider, $locationProvider, $httpProvider) {
+  $httpProvider.defaults.useXDomain = true;
+
+  delete $httpProvider.defaults.headers.common["X-Requested-With"];
+
   $locationProvider.html5Mode({
     enabled: true,
     requireBase: false,
@@ -25,14 +29,12 @@ app.controller("loginController", function ($scope, $http, $location) {
     "Content-Type": "application/x-www-form-urlencoded",
   };
   $scope.login = function () {
-    // console.log("creds", $scope.email, $scope.password);
     $http({
       method: "POST",
       url: "http://pickrrtesting.com/api/register-user-platform-plugin/",
       headers: headers,
       data: { shop_name: $scope.email, shop_token: $scope.password },
     }).then(function (response) {
-      // console.log("response==>", response.data);
       if (response.data.err === null) {
         $location.path("/orders");
       } else {
@@ -45,35 +47,56 @@ app.controller("loginController", function ($scope, $http, $location) {
 app.controller("ordersController", function ($scope, $http) {
   $scope.email;
   $scope.password;
+  $scope.account = {};
   var headers = {
     "Content-Type": "application/x-www-form-urlencoded",
-    "Access-Control-Allow-Origin": "*",
   };
-
-  // $http({
-  //   method: "GET",
-  //   url: "https://pickrr.herokuapp.com/fetch-shop-orders/harish-30/?days=2",
-  //   headers: headers,
-  // }).then(function (response) {
-  //   console.log("response==>", response.data);
-  // });
   $http({
     method: "GET",
     url: "data.json",
     headers: headers,
   }).then(function (response) {
     $scope.data = response.data.orders;
-    // console.log("response==>", $scope.data);
   });
 
   $scope.orderList = [];
   $scope.pushToArray = function (data, value) {
     if (value) {
       $scope.orderList.push(data);
-      console.log("orderList", $scope.orderList);
     } else {
       $scope.orderList.splice($scope.orderList.indexOf(data), 1);
-      console.log("orderList", $scope.orderList);
     }
+  };
+
+  $scope.addToOrder = function (key, value) {
+    for (var i = 0; i < $scope.orderList.length; i++) {
+      $scope.orderList[i][key] = value;
+      console.log("list==>", $scope.orderList);
+    }
+  };
+
+  var jsonData = $scope.orderList;
+  var objectToSerialize = {
+    order_data: jsonData,
+    email_list: ["abc@gmail.com"],
+    auth_token: $scope.account,
+  };
+  var postData = angular.toJson(objectToSerialize);
+
+  $scope.placeOrder = function () {
+    console.log("postdata==>", objectToSerialize);
+    $http({
+      method: "POST",
+      url: "http://pickrrtesting.com/api/bulk-place-order/",
+      headers: headers,
+      data: angular.toJson(objectToSerialize),
+    }).then(function (response) {
+      console.log("response after placing order==>", response.data.err);
+      if (response.data.err === null) {
+        alert("Order placed successfully");
+      } else {
+        alert("Error, in placing order");
+      }
+    });
   };
 });

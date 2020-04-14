@@ -43,39 +43,44 @@
           <div class="container" ng-if="orderList.length > 0">
             <div class="row">
               <div class="col-sm">
-                <div class="dropdown">
-                  <button
-                    class="btn btn-light dropdown-toggle"
-                    type="button"
-                    id="dropdownMenuButton"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
+                <md-input-container>
+                  <label>Select Account</label>
+                  <md-select
+                    ng-model="account.value"
                   >
-                    Select Account
-                  </button>
-                  <div
-                    class="dropdown-menu"
-                    aria-labelledby="dropdownMenuButton"
-                  >
-                    <a class="dropdown-item" href="#">Account 1</a>
-                    <a class="dropdown-item" href="#">Account 2</a>
-                    <a class="dropdown-item" href="#">Account 3</a>
-                  </div>
-                </div>
+                    <md-option
+                      ng-repeat="order in data.uorders"
+                      ng-value="order.pickrr_dict.auth_token"
+                    >
+                      {{order.pickrr_dict.auth_token}}
+                    </md-option>
+                  </md-select>
+                </md-input-container>
               </div>
               <div class="col-sm mt-2">
-                <md-checkbox aria-label="Checkbox 1">
+                <md-checkbox
+                  ng-model="has_surface"
+                  aria-label="Checkbox 1"
+                  ng-change="addToOrder('has_surface', has_surface)"
+                >
                   Surface
                 </md-checkbox>
               </div>
               <div class="col-sm mt-2">
-                <md-checkbox aria-label="Checkbox 1">
+                <md-checkbox
+                  ng-model="next_day_delivery"
+                  aria-label="Checkbox 1"
+                  ng-change="addToOrder('next_day_delivery', next_day_delivery)"
+                >
                   NDD
                 </md-checkbox>
               </div>
               <div class="col-sm mt-2">
-                <md-checkbox aria-label="Checkbox 1">
+                <md-checkbox
+                  ng-model="has_dg"
+                  aria-label="Checkbox 1"
+                  ng-change="addToOrder('has_dg', has_dg)"
+                >
                   DG
                 </md-checkbox>
               </div>
@@ -83,6 +88,7 @@
                 <md-button
                   class="md-raised mt-1 mb-3 mr-3 text-right"
                   target="_blank"
+                  ng-click="placeOrder()"
                 >
                   Place Order
                 </md-button>
@@ -106,7 +112,7 @@
                   <md-checkbox
                     ng-model="active.value"
                     aria-label="Checkbox 1"
-                    ng-change="pushToArray(order, active.value)"
+                    ng-change="pushToArray(order.pickrr_dict, active.value)"
                   >
                   </md-checkbox>
                 </th>
