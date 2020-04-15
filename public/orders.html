@@ -40,14 +40,12 @@
       </md-tab>
       <md-tab label="Not Fulfilled">
         <md-content class="md-padding">
-          <div class="container" ng-if="orderList.length > 0">
+          <div class="container-fluid" ng-if="orderList.length > 0">
             <div class="row">
-              <div class="col-sm">
+              <div class="col-sm-3">
                 <md-input-container>
                   <label>Select Account</label>
-                  <md-select
-                    ng-model="account.value"
-                  >
+                  <md-select ng-model="account.value">
                     <md-option
                       ng-repeat="order in data.uorders"
                       ng-value="order.pickrr_dict.auth_token"
@@ -57,7 +55,25 @@
                   </md-select>
                 </md-input-container>
               </div>
-              <div class="col-sm mt-2">
+              <div class="col-sm-4 mt-2">
+                <div class="row">
+                  <div class="col">
+                    <md-input-container>
+                      <label>Email</label>
+                      <input ng-model="emailList.value" />
+                    </md-input-container>
+                  </div>
+                  <div class="col">
+                    <md-button
+                      class="md-raised"
+                      ng-click="convertStringToArray()"
+                    >
+                      Add Email
+                    </md-button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-1 mt-2">
                 <md-checkbox
                   ng-model="has_surface"
                   aria-label="Checkbox 1"
@@ -66,7 +82,7 @@
                   Surface
                 </md-checkbox>
               </div>
-              <div class="col-sm mt-2">
+              <div class="col-sm-1 mt-2">
                 <md-checkbox
                   ng-model="next_day_delivery"
                   aria-label="Checkbox 1"
@@ -75,7 +91,7 @@
                   NDD
                 </md-checkbox>
               </div>
-              <div class="col-sm mt-2">
+              <div class="col-sm-1 mt-2">
                 <md-checkbox
                   ng-model="has_dg"
                   aria-label="Checkbox 1"
@@ -84,7 +100,7 @@
                   DG
                 </md-checkbox>
               </div>
-              <div class="col-sm text-right">
+              <div class="col-sm-1 text-right">
                 <md-button
                   class="md-raised mt-1 mb-3 mr-3 text-right"
                   target="_blank"

@@ -75,15 +75,27 @@ app.controller("ordersController", function ($scope, $http) {
     }
   };
 
-  var jsonData = $scope.orderList;
-  var objectToSerialize = {
-    order_data: jsonData,
-    email_list: ["abc@gmail.com"],
-    auth_token: $scope.account,
+  $scope.emailList = {};
+
+  $scope.convertStringToArray = function () {
+    $scope.array = $scope.emailList.value.split(",");
+    console.log("email list==>", typeof $scope.array);
   };
-  var postData = angular.toJson(objectToSerialize);
+
+  // var postData = angular.toJson(objectToSerialize);
 
   $scope.placeOrder = function () {
+    var order_list = $scope.orderList;
+
+    var jsonData = { order_list };
+
+    var objectToSerialize = {
+      order_data: jsonData,
+      email_list: $scope.array,
+      auth_token: $scope.account,
+      shop_platform: { name: "shopify", store_name: $scope.data.store },
+    };
+    console.log("array value==>", $scope.array);
     console.log("postdata==>", objectToSerialize);
     $http({
       method: "POST",
