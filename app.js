@@ -61,18 +61,13 @@ app.controller("ordersController", function ($scope, $http, $sce) {
   $scope.email;
   $scope.password;
   $scope.account = {};
-  // var headers = {
-  //   "Content-Type": "application/x-www-form-urlencoded",
-  // };
   var headers = {
-    "Access-Control-Allow-Origin": true,
-    "Content-Type": "application/json; charset=utf-8",
-    "X-Requested-With": "XMLHttpRequest",
+    "Content-Type": "application/x-www-form-urlencoded",
   };
 
   $http({
     method: "GET",
-    url: "http://pickrr.herokuapp.com/fetch-shop-orders/harish-30/?days=10",
+    url: "https://nitingupta220-proxy-server.herokuapp.com/orders",
     headers: headers,
   })
     .then(function (response) {
