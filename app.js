@@ -1,4 +1,10 @@
-var app = angular.module("pickrrApp", ["ngMaterial", "ngMessages", "ngRoute"]);
+var app = angular.module("pickrrApp", [
+  "ngMaterial",
+  "ngMessages",
+  "ngRoute",
+  "angular-loading-bar",
+  "ngAnimate",
+]);
 app.config(function ($routeProvider, $locationProvider, $httpProvider) {
   $httpProvider.defaults.useXDomain = true;
 
@@ -22,13 +28,19 @@ app.config(function ($routeProvider, $locationProvider, $httpProvider) {
       redirectTo: "/",
     });
 });
-app.controller("loginController", function ($scope, $http, $location) {
+app.controller("loginController", function (
+  $scope,
+  $http,
+  $location,
+  cfpLoadingBar
+) {
   $scope.email;
   $scope.password;
   var headers = {
     "Content-Type": "application/x-www-form-urlencoded",
   };
   $scope.login = function () {
+    cfpLoadingBar.start();
     $http({
       method: "POST",
       url: "http://pickrrtesting.com/api/register-user-platform-plugin/",
@@ -36,6 +48,7 @@ app.controller("loginController", function ($scope, $http, $location) {
       data: { shop_name: $scope.email, shop_token: $scope.password },
     }).then(function (response) {
       if (response.data.err === null) {
+        cfpLoadingBar.complete();
         $location.path("/orders");
       } else {
         alert("Wrong creds");
@@ -44,20 +57,32 @@ app.controller("loginController", function ($scope, $http, $location) {
   };
 });
 
-app.controller("ordersController", function ($scope, $http) {
+app.controller("ordersController", function ($scope, $http, $sce) {
   $scope.email;
   $scope.password;
   $scope.account = {};
+  // var headers = {
+  //   "Content-Type": "application/x-www-form-urlencoded",
+  // };
   var headers = {
-    "Content-Type": "application/x-www-form-urlencoded",
+    "Access-Control-Allow-Origin": true,
+    "Content-Type": "application/json; charset=utf-8",
+    "X-Requested-With": "XMLHttpRequest",
   };
+
   $http({
     method: "GET",
-    url: "data.json",
+    url: "http://pickrr.herokuapp.com/fetch-shop-orders/harish-30/?days=10",
     headers: headers,
-  }).then(function (response) {
-    $scope.data = response.data.orders;
-  });
+  })
+    .then(function (response) {
+      console.log("response==>", response);
+      $scope.data = response.data.orders;
+    })
+    .catch(function (response) {
+      console.log(response);
+      $scope.response = "ERROR: " + response.status;
+    });
 
   $scope.orderList = [];
   $scope.pushToArray = function (data, value) {
@@ -82,8 +107,6 @@ app.controller("ordersController", function ($scope, $http) {
     console.log("email list==>", typeof $scope.array);
   };
 
-  // var postData = angular.toJson(objectToSerialize);
-
   $scope.placeOrder = function () {
     var order_list = $scope.orderList;
 
@@ -92,7 +115,7 @@ app.controller("ordersController", function ($scope, $http) {
     var objectToSerialize = {
       order_data: jsonData,
       email_list: $scope.array,
-      auth_token: $scope.account,
+      auth_token: $scope.account.value,
       shop_platform: { name: "shopify", store_name: $scope.data.store },
     };
     console.log("array value==>", $scope.array);
