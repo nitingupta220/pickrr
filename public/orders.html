@@ -2,7 +2,7 @@
   <h1>Filter Orders</h1>
   <md-content>
     <md-tabs md-dynamic-height md-border-bottom>
-      <md-tab label="Fulfilled">
+      <!-- <md-tab label="Fulfilled">
         <md-content class="md-padding">
           <h1 class="md-display-2">Tab One</h1>
           <table class="table table-bordered table-hover">
@@ -37,7 +37,7 @@
             </tbody>
           </table>
         </md-content>
-      </md-tab>
+      </md-tab> -->
       <md-tab label="Not Fulfilled">
         <md-content class="md-padding">
           <div class="container-fluid" ng-if="orderList.length > 0">
@@ -73,32 +73,12 @@
                   </div>
                 </div>
               </div>
-              <div class="col-sm-1 mt-2">
-                <md-checkbox
-                  ng-model="has_surface"
-                  aria-label="Checkbox 1"
-                  ng-change="addToOrder('has_surface', has_surface)"
-                >
-                  Surface
-                </md-checkbox>
-              </div>
-              <div class="col-sm-1 mt-2">
-                <md-checkbox
-                  ng-model="next_day_delivery"
-                  aria-label="Checkbox 1"
-                  ng-change="addToOrder('next_day_delivery', next_day_delivery)"
-                >
-                  NDD
-                </md-checkbox>
-              </div>
-              <div class="col-sm-1 mt-2">
-                <md-checkbox
-                  ng-model="has_dg"
-                  aria-label="Checkbox 1"
-                  ng-change="addToOrder('has_dg', has_dg)"
-                >
-                  DG
-                </md-checkbox>
+              <div class="col-sm-2">
+                <md-radio-group ng-model="extraFeature.value">
+                  <md-radio-button value="Surface">Surface</md-radio-button>
+                  <md-radio-button value="NDD"> NDD </md-radio-button>
+                  <md-radio-button value="DG">DG</md-radio-button>
+                </md-radio-group>
               </div>
               <div class="col-sm-1 text-right">
                 <md-button
@@ -118,6 +98,7 @@
                 <th scope="col">Name</th>
                 <th scope="col">Order ID</th>
                 <th scope="col">Quantity</th>
+                <th scope="col">Order Type</th>
                 <th scope="col">Destination</th>
                 <th scope="col">Actions</th>
               </tr>
@@ -135,10 +116,18 @@
                 <td>{{order.pickrr_dict.from_name}}</td>
                 <td>{{order.pickrr_dict.client_order_id}}</td>
                 <td>{{order.pickrr_dict.quantity}}</td>
+                <td>
+                  <span ng-if="order.pickrr_dict.cod_amount === 0">
+                    Prepaid
+                  </span>
+                  <span ng-if="order.pickrr_dict.cod_amount < 0">
+                    COD
+                  </span>
+                </td>
                 <td>{{order.pickrr_dict.to_address}}</td>
                 <td>
-                  <md-button class="md-raised" target="_blank">
-                    Track
+                  <md-button class="md-raised md-warn" target="_blank">
+                    Cancel
                   </md-button>
                 </td>
               </tr>

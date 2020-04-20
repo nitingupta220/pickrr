@@ -61,11 +61,13 @@ app.controller("ordersController", function ($scope, $http, $sce) {
   $scope.email;
   $scope.password;
   $scope.account = {};
+  $scope.extraFeature = {};
   var headers = {
     "Content-Type": "application/x-www-form-urlencoded",
   };
 
   $http({
+    cache: true,
     method: "GET",
     url: "https://nitingupta220-proxy-server.herokuapp.com/orders",
     headers: headers,
@@ -88,13 +90,6 @@ app.controller("ordersController", function ($scope, $http, $sce) {
     }
   };
 
-  $scope.addToOrder = function (key, value) {
-    for (var i = 0; i < $scope.orderList.length; i++) {
-      $scope.orderList[i][key] = value;
-      console.log("list==>", $scope.orderList);
-    }
-  };
-
   $scope.emailList = {};
 
   $scope.convertStringToArray = function () {
@@ -103,10 +98,13 @@ app.controller("ordersController", function ($scope, $http, $sce) {
   };
 
   $scope.placeOrder = function () {
+    for (var i = 0; i < $scope.orderList.length; i++) {
+      $scope.orderList[i][$scope.extraFeature.value] = true;
+      console.log("list==>", $scope.orderList);
+    }
+
     var order_list = $scope.orderList;
-
     var jsonData = { order_list };
-
     var objectToSerialize = {
       order_data: jsonData,
       email_list: $scope.array,
@@ -116,12 +114,12 @@ app.controller("ordersController", function ($scope, $http, $sce) {
     console.log("array value==>", $scope.array);
     console.log("postdata==>", objectToSerialize);
     $http({
+      cache: true,
       method: "POST",
       url: "http://pickrrtesting.com/api/bulk-place-order/",
       headers: headers,
       data: angular.toJson(objectToSerialize),
     }).then(function (response) {
-      console.log("response after placing order==>", response.data.err);
       if (response.data.err === null) {
         alert("Order placed successfully");
       } else {
