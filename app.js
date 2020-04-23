@@ -4,17 +4,18 @@ var app = angular.module("pickrrApp", [
   "ngRoute",
   "angular-loading-bar",
   "ngAnimate",
+  "infinite-scroll",
 ]);
 app.config(function ($routeProvider, $locationProvider, $httpProvider) {
   $httpProvider.defaults.useXDomain = true;
 
   delete $httpProvider.defaults.headers.common["X-Requested-With"];
 
-  $locationProvider.html5Mode({
-    enabled: true,
-    requireBase: false,
-    rewriteLinks: false,
-  });
+  // $locationProvider.html5Mode({
+  //   enabled: true,
+  //   requireBase: false,
+  //   rewriteLinks: false,
+  // });
   $routeProvider
     .when("/", {
       templateUrl: "public/login.html",
@@ -57,11 +58,14 @@ app.controller("loginController", function (
   };
 });
 
-app.controller("ordersController", function ($scope, $http, $sce) {
+app.controller("ordersController", function ($scope, $http, $sce, $mdDialog) {
   $scope.email;
   $scope.password;
   $scope.account = {};
   $scope.extraFeature = {};
+  $scope.date;
+  $scope.search;
+
   var headers = {
     "Content-Type": "application/x-www-form-urlencoded",
   };
@@ -69,7 +73,8 @@ app.controller("ordersController", function ($scope, $http, $sce) {
   $http({
     cache: true,
     method: "GET",
-    url: "https://nitingupta220-proxy-server.herokuapp.com/orders",
+    // url: "https://nitingupta220-proxy-server.herokuapp.com/orders",
+    url: "https://pickrr.herokuapp.com/fetch-shop-orders/harish-30/?days=9",
     headers: headers,
   })
     .then(function (response) {
@@ -80,6 +85,32 @@ app.controller("ordersController", function ($scope, $http, $sce) {
       console.log(response);
       $scope.response = "ERROR: " + response.status;
     });
+
+  $scope.changeDate = function (date) {
+    var date = new Date(date).getDate();
+    $http({
+      cache: true,
+      method: "GET",
+      // url: "https://nitingupta220-proxy-server.herokuapp.com/orders",
+      url:
+        "https://pickrr.herokuapp.com/fetch-shop-orders/harish-30/?days=" +
+        date,
+      headers: headers,
+    })
+      .then(function (response) {
+        console.log("after changing date==>", response);
+        $scope.data = response.data.orders;
+      })
+      .catch(function (response) {
+        console.log(response);
+        $scope.response = "ERROR: in changing date " + response.status;
+      });
+  };
+
+  $scope.showPrompt = function (order) {
+    console.log("order detaisl==>", order);
+    $scope.modalData = order;
+  };
 
   $scope.orderList = [];
   $scope.pushToArray = function (data, value) {

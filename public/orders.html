@@ -1,5 +1,80 @@
 <div>
+  <div
+    class="modal fade"
+    id="exampleModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Order Details</h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <md-input-container>
+            <label>Name</label>
+            <input ng-model="modalData.pickrr_dict.from_name" />
+          </md-input-container>
+          <md-input-container>
+            <label>Order ID</label>
+            <input ng-model="modalData.pickrr_dict.client_order_id" />
+          </md-input-container>
+          <md-input-container>
+            <label>Quantity</label>
+            <input ng-model="modalData.pickrr_dict.quantity" />
+          </md-input-container>
+          <md-input-container>
+            <label>Order Type</label>
+            <input ng-model="modalData.pickrr_dict.quantity" />
+          </md-input-container>
+          <md-input-container>
+            <label>Destination</label>
+            <input ng-model="modalData.pickrr_dict.to_address" />
+          </md-input-container>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal">
+            Save changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
   <h1>Filter Orders</h1>
+  <div>
+    <div class="row">
+      <div class="col-sm">
+        <md-input-container>
+          <label>Search</label>
+          <input ng-model="search" />
+          {{search}}
+        </md-input-container>
+      </div>
+      <div class="col-sm">
+        <!-- <md-datepicker
+          class="tex-right"
+          ng-model="date"
+          md-placeholder="Enter date"
+        ></md-datepicker> -->
+        <input type="date" ng-model="date" ng-change="changeDate(date)" />
+        {{date | date:'yyyy-MM-dd'}}
+      </div>
+    </div>
+  </div>
+
   <md-content>
     <md-tabs md-dynamic-height md-border-bottom>
       <!-- <md-tab label="Fulfilled">
@@ -104,7 +179,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="order in data.uorders">
+              <tr ng-repeat="order in data.uorders | filter: search">
                 <th scope="row">
                   <md-checkbox
                     ng-model="active.value"
@@ -126,8 +201,13 @@
                 </td>
                 <td>{{order.pickrr_dict.to_address}}</td>
                 <td>
-                  <md-button class="md-raised md-warn" target="_blank">
-                    Cancel
+                  <md-button
+                    class="md-raised md-primary"
+                    ng-click="showPrompt(order)"
+                    data-toggle="modal"
+                    data-target="#exampleModal"
+                  >
+                    Edit
                   </md-button>
                 </td>
               </tr>
