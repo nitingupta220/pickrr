@@ -7,9 +7,9 @@ var app = angular.module("pickrrApp", [
   "infinite-scroll",
 ]);
 app.config(function ($routeProvider, $locationProvider, $httpProvider) {
-  $httpProvider.defaults.useXDomain = true;
+  // $httpProvider.defaults.useXDomain = true;
 
-  delete $httpProvider.defaults.headers.common["X-Requested-With"];
+  // delete $httpProvider.defaults.headers.common["X-Requested-With"];
 
   // $locationProvider.html5Mode({
   //   enabled: true,
@@ -60,7 +60,7 @@ app.controller("loginController", function (
   };
 });
 
-app.controller("ordersController", function ($scope, $http, $rootScope) {
+app.controller("ordersController", function ($scope, $http, $rootScope, $sce) {
   $scope.email;
   $scope.password;
   $scope.account = {};
@@ -77,12 +77,29 @@ app.controller("ordersController", function ($scope, $http, $rootScope) {
   };
 
   // <-----GETTING INTIAL ORDERS----->
+  // fetch("http://pickrr.com/plugins/fetch-shop-orders/harish-30/?days=9", {
+  //   method: "GET",
+  //   mode: "cors",
+  //   cache: "no-cache",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //     // 'Content-Type': 'application/x-www-form-urlencoded',
+  //   },
+  // }).then(function (response) {
+  //   console.log(
+  //     response.json().then(function (response) {
+  //       console.log("get", response);
+  //     })
+  //   );
+  // });
+
   $http({
     cache: true,
     method: "GET",
     // url: "https://nitingupta220-proxy-server.herokuapp.com/orders",
-    url: "https://pickrr.herokuapp.com/fetch-shop-orders/harish-30/?days=9",
-    headers: headers,
+    url: "http://pickrr.com/plugins/fetch-shop-orders/harish-30/?days=9",
+    // url: url,
+    // headers: headers,
   })
     .then(function (response) {
       console.log("response==>", response);
