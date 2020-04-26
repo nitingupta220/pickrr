@@ -30,16 +30,40 @@
             <input ng-model="modalData.pickrr_dict.client_order_id" />
           </md-input-container>
           <md-input-container>
+            <label>Item Name</label>
+            <input ng-model="modalData.pickrr_dict.item_name" />
+          </md-input-container>
+          <md-input-container>
+            <label>Phone Number</label>
+            <input ng-model="modalData.pickrr_dict.from_phone_number" />
+          </md-input-container>
+          <md-input-container>
             <label>Quantity</label>
             <input ng-model="modalData.pickrr_dict.quantity" />
           </md-input-container>
           <md-input-container>
             <label>Order Type</label>
-            <input ng-model="modalData.pickrr_dict.quantity" />
+            <input ng-model="modalData.pickrr_dict.cod_amount" />
+          </md-input-container>
+          <md-input-container>
+            <label>From Address </label>
+            <input ng-model="modalData.pickrr_dict.from_address" />
+          </md-input-container>
+          <md-input-container>
+            <label>Receiver Name</label>
+            <input ng-model="modalData.pickrr_dict.to_name" />
+          </md-input-container>
+          <md-input-container>
+            <label>Receiver Phone Number</label>
+            <input ng-model="modalData.pickrr_dict.to_phone_number" />
           </md-input-container>
           <md-input-container>
             <label>Destination</label>
             <input ng-model="modalData.pickrr_dict.to_address" />
+          </md-input-container>
+          <md-input-container>
+            <label>Invoice Value</label>
+            <input ng-model="modalData.pickrr_dict.invoice_value" />
           </md-input-container>
         </div>
         <div class="modal-footer">
@@ -54,10 +78,11 @@
     </div>
   </div>
   <h1>
-    Filter Orders
+    UnFulfilled Orders
   </h1>
   <div>
     <div class="row">
+      <div class="col-sm"></div>
       <div class="col-sm">
         <md-input-container>
           <label>Search</label>
@@ -65,56 +90,14 @@
         </md-input-container>
       </div>
       <div class="col-sm">
-        <!-- <md-datepicker
-          class="tex-right"
-          ng-model="date"
-          md-placeholder="Enter date"
-        ></md-datepicker> -->
-        <input type="date" ng-model="date" ng-change="changeDate(date)" />
-        {{date | date:'yyyy-MM-dd'}}
+          <input type="date" ng-model="date" ng-change="changeDate(date)" />
       </div>
+      <div class="col-sm"></div>
     </div>
   </div>
 
   <md-content>
     <md-tabs md-dynamic-height md-border-bottom>
-      <!-- <md-tab label="Fulfilled">
-        <md-content class="md-padding">
-          <h1 class="md-display-2">Tab One</h1>
-          <table class="table table-bordered table-hover">
-            <thead>
-              <tr>
-                <th scope="col">Select</th>
-                <th scope="col">Pickrr ID</th>
-                <th scope="col">Placed Date</th>
-                <th scope="col">Tracking ID</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="order in data.porders">
-                <th scope="row">
-                  <md-checkbox ng-model="active.value" aria-label="Checkbox 1">
-                  </md-checkbox>
-                </th>
-                <td>{{order.shopify_order_id}}</td>
-                <td>{{order.created_at}}</td>
-                <td>{{order.tracking_number}}</td>
-                <td>
-                  <md-button
-                    class="md-raised"
-                    ng-href="{{order.tracking_url}}"
-                    target="_blank"
-                  >
-                    Track
-                  </md-button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </md-content>
-      </md-tab> -->
-
       <md-tab label="Not Fulfilled">
         <md-content class="md-padding">
           <div class="container-fluid" ng-if="orderList.length > 0">
@@ -186,34 +169,56 @@
                 <th scope="col">Select</th>
                 <th scope="col">Name</th>
                 <th scope="col">Order ID</th>
+                <th scope="col">Item Name</th>
+                <th scope="col">Phone number</th>
                 <th scope="col">Quantity</th>
                 <th scope="col">Order Type</th>
+                <th scope="col">From Address</th>
+                <th scope="col">Receiver Name</th>
+                <th scope="col">Receiver Phone Number</th>
                 <th scope="col">Destination</th>
+                <th scope="col">Invoice Value</th>
                 <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr ng-repeat="order in data | filter: search track by $index">
-                <th scope="row">
+                <td scope="row">
                   <md-checkbox
                     ng-model="active.value"
                     aria-label="Checkbox 1"
                     ng-change="pushToArray(order.pickrr_dict, active.value)"
                   >
                   </md-checkbox>
-                </th>
+                </td>
                 <td>{{order.pickrr_dict.from_name}}</td>
                 <td>{{order.pickrr_dict.client_order_id}}</td>
+                <td>{{order.pickrr_dict.item_name}}</td>
+                <td>{{order.pickrr_dict.from_phone_number}}</td>
                 <td>{{order.pickrr_dict.quantity}}</td>
                 <td>
                   <span ng-if="order.pickrr_dict.cod_amount === 0">
                     Prepaid
                   </span>
-                  <span ng-if="order.pickrr_dict.cod_amount < 0">
+                  <span ng-if="order.pickrr_dict.cod_amount > 0">
                     COD
                   </span>
                 </td>
-                <td>{{order.pickrr_dict.to_address}}</td>
+                <td>
+                  {{order.pickrr_dict.from_address}} -
+                  {{order.pickrr_dict.from_pincode}}
+                </td>
+                <td>
+                  {{order.pickrr_dict.to_name}}
+                </td>
+                <td>
+                  {{order.pickrr_dict.to_phone_number}}
+                </td>
+                <td>
+                  {{order.pickrr_dict.to_address}} -
+                  {{order.pickrr_dict.to_pincode}}
+                </td>
+                <td>{{order.pickrr_dict.invoice_value}}</td>
                 <td>
                   <md-button
                     class="md-raised md-primary"

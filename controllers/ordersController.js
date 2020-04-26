@@ -30,23 +30,6 @@ app.controller("ordersController", function ($scope, $http, cfpLoadingBar) {
     });
   });
 
-  //   $http({
-  //     cache: true,
-  //     method: "GET",
-  //     // url: "https://nitingupta220-proxy-server.herokuapp.com/orders",
-  //     url: "http://pickrr.com/plugins/fetch-shop-orders/harish-30/?days=9",
-  //     // url: url,
-  //     // headers: headers,
-  //   })
-  //     .then(function (response) {
-  //       console.log("response==>", response);
-  //       $scope.data = response.data.orders;
-  //     })
-  //     .catch(function (response) {
-  //       console.log(response);
-  //       $scope.response = "ERROR: " + response.status;
-  //     });
-
   // <----PUSHING TO ARRAY WHEN SELECTING CHECKBOX------>
   $scope.pushToArray = function (data, value) {
     if (value) {
@@ -94,19 +77,6 @@ app.controller("ordersController", function ($scope, $http, cfpLoadingBar) {
         }
       });
     });
-    // $http({
-    //   cache: true,
-    //   method: "POST",
-    //   url: "c",
-    //   headers: headers,
-    //   data: angular.toJson(objectToSerialize),
-    // }).then(function (response) {
-    //   if (response.data.err === null) {
-    //     alert("Order placed successfully");
-    //   } else {
-    //     alert("Error, in placing order");
-    //   }
-    // });
   };
 
   // <------MODAL OPEN------>
@@ -134,22 +104,5 @@ app.controller("ordersController", function ($scope, $http, cfpLoadingBar) {
         $scope.data = response.orders.uorders;
       });
     });
-    // $http({
-    //   cache: true,
-    //   method: "GET",
-    //   // url: "https://nitingupta220-proxy-server.herokuapp.com/orders",
-    //   url:
-    //     "https://pickrr.herokuapp.com/fetch-shop-orders/harish-30/?days=" +
-    //     currentDate,
-    //   headers: headers,
-    // })
-    //   .then(function (response) {
-    //     console.log("after changing date==>", response);
-    //     $scope.data = response.data.orders;
-    //   })
-    //   .catch(function (response) {
-    //     console.log(response);
-    //     $scope.response = "ERROR: in changing date " + response.status;
-    //   });
   };
 });
