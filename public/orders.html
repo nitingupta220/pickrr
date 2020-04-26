@@ -124,7 +124,7 @@
                   <label>Select Account</label>
                   <md-select ng-model="account.value">
                     <md-option
-                      ng-repeat="order in data.uorders"
+                      ng-repeat="order in data"
                       ng-value="order.pickrr_dict.auth_token"
                     >
                       {{order.pickrr_dict.auth_token}}
@@ -152,9 +152,11 @@
               </div>
               <div class="col-sm-2">
                 <md-radio-group ng-model="extraFeature.value">
-                  <md-radio-button value="Surface">Surface</md-radio-button>
-                  <md-radio-button value="NDD"> NDD </md-radio-button>
-                  <md-radio-button value="DG">DG</md-radio-button>
+                  <md-radio-button value="has_surface">Surface</md-radio-button>
+                  <md-radio-button value="next_day_delivery">
+                    NDD
+                  </md-radio-button>
+                  <md-radio-button value="has_dg">DG</md-radio-button>
                 </md-radio-group>
               </div>
               <div class="col-sm-1 text-right">
@@ -178,10 +180,7 @@
               No orders for this date. Please select another date
             </h2>
           </md-content>
-          <table
-            class="table table-bordered table-hover"
-            ng-if="data.uorders.length > 0"
-          >
+          <table class="table table-bordered table-hover">
             <thead>
               <tr>
                 <th scope="col">Select</th>
@@ -194,9 +193,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                ng-repeat="order in data.uorders | filter: search track by $index"
-              >
+              <tr ng-repeat="order in data | filter: search track by $index">
                 <th scope="row">
                   <md-checkbox
                     ng-model="active.value"
