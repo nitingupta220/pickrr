@@ -53,14 +53,15 @@
       </div>
     </div>
   </div>
-  <h1>Filter Orders</h1>
+  <h1>
+    Filter Orders
+  </h1>
   <div>
     <div class="row">
       <div class="col-sm">
         <md-input-container>
           <label>Search</label>
           <input ng-model="search" />
-          {{search}}
         </md-input-container>
       </div>
       <div class="col-sm">
@@ -113,6 +114,7 @@
           </table>
         </md-content>
       </md-tab> -->
+
       <md-tab label="Not Fulfilled">
         <md-content class="md-padding">
           <div class="container-fluid" ng-if="orderList.length > 0">
@@ -166,7 +168,20 @@
               </div>
             </div>
           </div>
-          <table class="table table-bordered table-hover">
+          <md-content
+            ng-if="data.uorders.length === 0"
+            flex
+            layout-padding
+            class="text-center"
+          >
+            <h2>
+              No orders for this date. Please select another date
+            </h2>
+          </md-content>
+          <table
+            class="table table-bordered table-hover"
+            ng-if="data.uorders.length > 0"
+          >
             <thead>
               <tr>
                 <th scope="col">Select</th>
@@ -179,7 +194,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="order in data.uorders | filter: search">
+              <tr
+                ng-repeat="order in data.uorders | filter: search track by $index"
+              >
                 <th scope="row">
                   <md-checkbox
                     ng-model="active.value"

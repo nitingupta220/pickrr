@@ -31,6 +31,7 @@ app.config(function ($routeProvider, $locationProvider, $httpProvider) {
 });
 app.controller("loginController", function (
   $scope,
+  $rootScope,
   $http,
   $location,
   cfpLoadingBar
@@ -44,10 +45,11 @@ app.controller("loginController", function (
     cfpLoadingBar.start();
     $http({
       method: "POST",
-      url: "http://pickrrtesting.com/api/register-user-platform-plugin/",
+      url: "http://pickrr.com/api/register-user-platform-plugin/",
       headers: headers,
       data: { shop_name: $scope.email, shop_token: $scope.password },
     }).then(function (response) {
+      console.log("response==>", response);
       if (response.data.err === null) {
         cfpLoadingBar.complete();
         $location.path("/orders");
@@ -58,18 +60,23 @@ app.controller("loginController", function (
   };
 });
 
-app.controller("ordersController", function ($scope, $http, $sce, $mdDialog) {
+app.controller("ordersController", function ($scope, $http, $rootScope) {
   $scope.email;
   $scope.password;
   $scope.account = {};
   $scope.extraFeature = {};
   $scope.date;
   $scope.search;
+  $scope.orderList = [];
+  $scope.emailList = {};
 
   var headers = {
-    "Content-Type": "application/x-www-form-urlencoded",
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Credentials": true,
   };
 
+  // <-----GETTING INTIAL ORDERS----->
   $http({
     cache: true,
     method: "GET",
@@ -86,33 +93,7 @@ app.controller("ordersController", function ($scope, $http, $sce, $mdDialog) {
       $scope.response = "ERROR: " + response.status;
     });
 
-  $scope.changeDate = function (date) {
-    var date = new Date(date).getDate();
-    $http({
-      cache: true,
-      method: "GET",
-      // url: "https://nitingupta220-proxy-server.herokuapp.com/orders",
-      url:
-        "https://pickrr.herokuapp.com/fetch-shop-orders/harish-30/?days=" +
-        date,
-      headers: headers,
-    })
-      .then(function (response) {
-        console.log("after changing date==>", response);
-        $scope.data = response.data.orders;
-      })
-      .catch(function (response) {
-        console.log(response);
-        $scope.response = "ERROR: in changing date " + response.status;
-      });
-  };
-
-  $scope.showPrompt = function (order) {
-    console.log("order detaisl==>", order);
-    $scope.modalData = order;
-  };
-
-  $scope.orderList = [];
+  // <----PUSHING TO ARRAY WHEN SELECTING CHECKBOX------>
   $scope.pushToArray = function (data, value) {
     if (value) {
       $scope.orderList.push(data);
@@ -121,13 +102,12 @@ app.controller("ordersController", function ($scope, $http, $sce, $mdDialog) {
     }
   };
 
-  $scope.emailList = {};
-
+  // <----CONVERTING STRING TO EMAIL LIST----->
   $scope.convertStringToArray = function () {
     $scope.array = $scope.emailList.value.split(",");
-    console.log("email list==>", typeof $scope.array);
   };
 
+  // <----POSTING DATA---->
   $scope.placeOrder = function () {
     for (var i = 0; i < $scope.orderList.length; i++) {
       $scope.orderList[i][$scope.extraFeature.value] = true;
@@ -147,7 +127,7 @@ app.controller("ordersController", function ($scope, $http, $sce, $mdDialog) {
     $http({
       cache: true,
       method: "POST",
-      url: "http://pickrrtesting.com/api/bulk-place-order/",
+      url: "http://pickrr.com/api/bulk-place-order/",
       headers: headers,
       data: angular.toJson(objectToSerialize),
     }).then(function (response) {
@@ -157,5 +137,33 @@ app.controller("ordersController", function ($scope, $http, $sce, $mdDialog) {
         alert("Error, in placing order");
       }
     });
+  };
+
+  // <------MODAL OPEN------>
+  $scope.showPrompt = function (order) {
+    console.log("order detaisl==>", order);
+    $scope.modalData = order;
+  };
+
+  // <-----GETTING ORDER WHEN DATE CHANEGS----->
+  $scope.changeDate = function (date) {
+    var date = new Date(date).getDate();
+    $http({
+      cache: true,
+      method: "GET",
+      // url: "https://nitingupta220-proxy-server.herokuapp.com/orders",
+      url:
+        "https://pickrr.herokuapp.com/fetch-shop-orders/harish-30/?days=" +
+        date,
+      headers: headers,
+    })
+      .then(function (response) {
+        console.log("after changing date==>", response);
+        $scope.data = response.data.orders;
+      })
+      .catch(function (response) {
+        console.log(response);
+        $scope.response = "ERROR: in changing date " + response.status;
+      });
   };
 });
