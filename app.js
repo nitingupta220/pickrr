@@ -6,7 +6,7 @@ var app = angular.module("pickrrApp", [
   "ngAnimate",
   "infinite-scroll",
 ]);
-app.config(function ($routeProvider, $locationProvider, $httpProvider) {
+app.config(function ($routeProvider) {
   $routeProvider
     .when("/", {
       templateUrl: "public/login.html",

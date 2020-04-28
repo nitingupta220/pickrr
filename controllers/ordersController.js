@@ -1,10 +1,16 @@
-app.controller("ordersController", function ($scope, $http, cfpLoadingBar) {
+app.controller("ordersController", function (
+  $scope,
+  $location,
+  cfpLoadingBar,
+  $timeout,
+  $window
+) {
   cfpLoadingBar.start();
 
   $scope.email;
   $scope.password;
   $scope.account = {};
-  $scope.extraFeature = {};
+  $scope.extraFeature = { value: "air" };
   $scope.date;
   $scope.search;
   $scope.orderList = [];
@@ -19,14 +25,20 @@ app.controller("ordersController", function ($scope, $http, cfpLoadingBar) {
   // <-----GETTING INTIAL ORDERS----->
   fetch("http://pickrr.com/plugins/fetch-shop-orders/harish-30/?days=9", {
     method: "GET",
-    mode: "cors",
+    // mode: "cors",
     cache: "force-cache",
   }).then(function (response) {
     response.json().then(function (response) {
-      console.log("response==>", response);
+      $scope.account_list = $window.sessionStorage.getItem("account_list");
+      $scope.account = JSON.parse($scope.account_list)
+      console.log("response==>", response, JSON.parse($scope.account_list));
       $scope.store_name = response.orders.store;
       cfpLoadingBar.complete();
       $scope.data = response.orders.uorders;
+      $scope.porders = response.orders.porders;
+      $scope.data.forEach(function (obj) {
+        obj.original = true;
+      });
     });
   });
 
@@ -40,16 +52,21 @@ app.controller("ordersController", function ($scope, $http, cfpLoadingBar) {
   };
 
   // <----CONVERTING STRING TO EMAIL LIST----->
-  $scope.convertStringToArray = function () {
-    $scope.array = $scope.emailList.value.split(",");
-  };
+  // $scope.convertStringToArray = function () {
+  //   $scope.array = $scope.emailList.value.split(",");
+  // };
 
   // <----POSTING DATA---->
   $scope.placeOrder = function () {
     cfpLoadingBar.start();
+
+    $scope.array = $scope.emailList.value.split(",");
+
     for (var i = 0; i < $scope.orderList.length; i++) {
-      $scope.orderList[i][$scope.extraFeature.value] = true;
-      console.log("list==>", $scope.orderList);
+      if ($scope.extraFeature.value !== "air") {
+        $scope.orderList[i][$scope.extraFeature.value] = true;
+        console.log("list==>", $scope.orderList);
+      }
     }
 
     var order_list = $scope.orderList;
@@ -71,7 +88,9 @@ app.controller("ordersController", function ($scope, $http, cfpLoadingBar) {
       response.json().then(function (response) {
         if (response.err === null) {
           cfpLoadingBar.complete();
-          alert("Order placed successfully");
+          alert(
+            "Your order placed successfully!!!  You'll receive an email regarding the order details."
+          );
         } else {
           alert("Error, in placing order");
         }
@@ -80,8 +99,9 @@ app.controller("ordersController", function ($scope, $http, cfpLoadingBar) {
   };
 
   // <------MODAL OPEN------>
-  $scope.showPrompt = function (order) {
-    console.log("order detaisl==>", order);
+  $scope.openModal = function (order, recipient) {
+    console.log("order details==>", order, recipient);
+    $scope.send = recipient;
     $scope.modalData = order;
   };
 
@@ -95,14 +115,35 @@ app.controller("ordersController", function ($scope, $http, cfpLoadingBar) {
         currentDate,
       {
         method: "GET",
-        mode: "cors",
+        // mode: "cors",
         cache: "force-cache",
       }
     ).then(function (response) {
       response.json().then(function (response) {
         cfpLoadingBar.complete();
         $scope.data = response.orders.uorders;
+        $scope.data.forEach(function (obj) {
+          obj.original = true;
+        });
       });
     });
+  };
+
+  // <-----Logout------>
+  $scope.logout = function () {
+    cfpLoadingBar.start();
+    $timeout(function () {
+      $location.path("/");
+      cfpLoadingBar.complete();
+    }, 2000);
+  };
+
+  // <------Clone Order------->
+  $scope.cloneOrder = function (order) {
+    cfpLoadingBar.start();
+    const newOrder = angular.copy(order);
+    newOrder.original = false;
+    $scope.data.unshift(newOrder);
+    cfpLoadingBar.complete();
   };
 });

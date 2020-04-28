@@ -1,7 +1,7 @@
 <div>
   <div
     class="modal fade"
-    id="exampleModal"
+    id="editModal"
     tabindex="-1"
     role="dialog"
     aria-labelledby="exampleModalLabel"
@@ -21,49 +21,53 @@
           </button>
         </div>
         <div class="modal-body">
-          <md-input-container>
+          <md-input-container ng-if="send == 'sender'">
             <label>Name</label>
             <input ng-model="modalData.pickrr_dict.from_name" />
           </md-input-container>
-          <md-input-container>
-            <label>Order ID</label>
-            <input ng-model="modalData.pickrr_dict.client_order_id" />
+          <md-input-container ng-if="send == 'receiver'">
+            <label>Name</label>
+            <input ng-model="modalData.pickrr_dict.to_name" />
           </md-input-container>
-          <md-input-container>
+          <md-input-container ng-if="send == 'item'">
             <label>Item Name</label>
-            <input ng-model="modalData.pickrr_dict.item_name" />
+            <input ng-model="modalData.item_name" />
           </md-input-container>
-          <md-input-container>
+          <md-input-container ng-if="send == 'sender'">
+            <label>Address</label>
+            <input ng-model="modalData.pickrr_dict.from_address" />
+          </md-input-container>
+          <md-input-container ng-if="send == 'receiver'">
+            <label>Address</label>
+            <input ng-model="modalData.pickrr_dict.to_address" />
+          </md-input-container>
+          <md-input-container ng-if="send == 'item'">
+            <label>SKU</label>
+            <input ng-model="modalData.sku" />
+          </md-input-container>
+          <md-input-container ng-if="send == 'sender'">
+            <label>Pincode</label>
+            <input ng-model="modalData.pickrr_dict.from_pincode" />
+          </md-input-container>
+          <md-input-container ng-if="send == 'receiver'">
+            <label>Pincode</label>
+            <input ng-model="modalData.pickrr_dict.to_pincode" />
+          </md-input-container>
+          <md-input-container ng-if="send == 'item'">
+            <label>Price</label>
+            <input ng-model="modalData.price" />
+          </md-input-container>
+          <md-input-container ng-if="send == 'sender'">
             <label>Phone Number</label>
             <input ng-model="modalData.pickrr_dict.from_phone_number" />
           </md-input-container>
-          <md-input-container>
-            <label>Quantity</label>
-            <input ng-model="modalData.pickrr_dict.quantity" />
-          </md-input-container>
-          <md-input-container>
-            <label>Order Type</label>
-            <input ng-model="modalData.pickrr_dict.cod_amount" />
-          </md-input-container>
-          <md-input-container>
-            <label>From Address </label>
-            <input ng-model="modalData.pickrr_dict.from_address" />
-          </md-input-container>
-          <md-input-container>
-            <label>Receiver Name</label>
-            <input ng-model="modalData.pickrr_dict.to_name" />
-          </md-input-container>
-          <md-input-container>
-            <label>Receiver Phone Number</label>
+          <md-input-container ng-if="send == 'receiver'">
+            <label>Phone Number</label>
             <input ng-model="modalData.pickrr_dict.to_phone_number" />
           </md-input-container>
-          <md-input-container>
-            <label>Destination</label>
-            <input ng-model="modalData.pickrr_dict.to_address" />
-          </md-input-container>
-          <md-input-container>
-            <label>Invoice Value</label>
-            <input ng-model="modalData.pickrr_dict.invoice_value" />
+          <md-input-container ng-if="send == 'item'">
+            <label>Quantity</label>
+            <input ng-model="modalData.quantity" />
           </md-input-container>
         </div>
         <div class="modal-footer">
@@ -77,9 +81,13 @@
       </div>
     </div>
   </div>
-  <h1>
-    UnFulfilled Orders
-  </h1>
+  <nav class="navbar navbar-light" style="background-color: rgb(63, 81, 181);">
+    <span class="navbar-brand mb-0 h1" style="color: white;">Shopify App</span>
+    <div class="col-sm text-right">
+      <md-button class="md-raised" ng-click="logout()">Logout</md-button>
+    </div>
+  </nav>
+
   <div>
     <div class="row">
       <div class="col-sm"></div>
@@ -90,7 +98,7 @@
         </md-input-container>
       </div>
       <div class="col-sm">
-          <input type="date" ng-model="date" ng-change="changeDate(date)" />
+        <input type="date" ng-model="date" ng-change="changeDate(date)" />
       </div>
       <div class="col-sm"></div>
     </div>
@@ -98,24 +106,59 @@
 
   <md-content>
     <md-tabs md-dynamic-height md-border-bottom>
-      <md-tab label="Not Fulfilled">
+      <md-tab label="Fulfilled Orders">
+        <md-content class="md-padding">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Pickrr ID</th>
+                <th scope="col">Placed Date</th>
+                <th scope="col">Tracking ID</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="order in porders">
+                <td>{{order.shopify_order_id}}</td>
+                <td>{{order.created_at}}</td>
+                <td>{{order.tracking_number}}</td>
+                <td>
+                  <span ng-if="order.tracking_number !== null">
+                    <md-button
+                      class="md-raised"
+                      ng-href="{{order.tracking_url}}"
+                      target="_blank"
+                    >
+                      Track
+                    </md-button>
+                  </span>
+                  <span ng-if="order.tracking_number == null">
+                    Tracking Id Error
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </md-content>
+      </md-tab>
+      <md-tab label="Non Fulfilled Orders">
         <md-content class="md-padding">
           <div class="container-fluid" ng-if="orderList.length > 0">
             <div class="row">
-              <div class="col-sm-3">
+              <div class="col-sm-4">
                 <md-input-container>
                   <label>Select Account</label>
                   <md-select ng-model="account.value">
                     <md-option
-                      ng-repeat="order in data"
-                      ng-value="order.pickrr_dict.auth_token"
+                      ng-repeat="order in account track by $index"
+                      ng-value="order.account_name"
                     >
-                      {{order.pickrr_dict.auth_token}}
+                      {{order.account_name}}
                     </md-option>
                   </md-select>
                 </md-input-container>
               </div>
-              <div class="col-sm-4 mt-2">
+              <div class="col-sm-3">
                 <div class="row">
                   <div class="col">
                     <md-input-container>
@@ -123,30 +166,35 @@
                       <input ng-model="emailList.value" />
                     </md-input-container>
                   </div>
-                  <div class="col">
-                    <md-button
-                      class="md-raised"
-                      ng-click="convertStringToArray()"
-                    >
-                      Add Email
-                    </md-button>
-                  </div>
                 </div>
               </div>
-              <div class="col-sm-2">
-                <md-radio-group ng-model="extraFeature.value">
+              <div
+                class="col-sm-3"
+                style="
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  margin-bottom: 15px;
+                "
+              >
+                <md-radio-group
+                  ng-model="extraFeature.value"
+                  style="display: flex; justify-content: space-evenly;"
+                >
+                  <md-radio-button value="air">Air</md-radio-button>
                   <md-radio-button value="has_surface">Surface</md-radio-button>
-                  <md-radio-button value="next_day_delivery">
-                    NDD
-                  </md-radio-button>
+                  <md-radio-button value="next_day_delivery"
+                    >NDD</md-radio-button
+                  >
                   <md-radio-button value="has_dg">DG</md-radio-button>
                 </md-radio-group>
               </div>
               <div class="col-sm-1 text-right">
                 <md-button
-                  class="md-raised mt-1 mb-3 mr-3 text-right"
+                  class="md-raised text-right"
                   target="_blank"
                   ng-click="placeOrder()"
+                  ng-disabled="(!emailList.value || !account.value) ? true : false"
                 >
                   Place Order
                 </md-button>
@@ -163,21 +211,20 @@
               No orders for this date. Please select another date
             </h2>
           </md-content>
-          <table class="table table-bordered table-hover">
+          <table class="table table-hover">
             <thead>
               <tr>
                 <th scope="col">Select</th>
-                <th scope="col">Name</th>
+                <!-- <th scope="col">Name</th> -->
                 <th scope="col">Order ID</th>
-                <th scope="col">Item Name</th>
-                <th scope="col">Phone number</th>
+                <th scope="col">Order State</th>
+                <th scope="col">Item List</th>
                 <th scope="col">Quantity</th>
                 <th scope="col">Order Type</th>
-                <th scope="col">From Address</th>
-                <th scope="col">Receiver Name</th>
-                <th scope="col">Receiver Phone Number</th>
-                <th scope="col">Destination</th>
+                <th scope="col">Cod Amount</th>
                 <th scope="col">Invoice Value</th>
+                <th scope="col">Sender Details</th>
+                <th scope="col">Receiver Details</th>
                 <th scope="col">Actions</th>
               </tr>
             </thead>
@@ -191,10 +238,25 @@
                   >
                   </md-checkbox>
                 </td>
-                <td>{{order.pickrr_dict.from_name}}</td>
                 <td>{{order.pickrr_dict.client_order_id}}</td>
-                <td>{{order.pickrr_dict.item_name}}</td>
-                <td>{{order.pickrr_dict.from_phone_number}}</td>
+                <td>
+                  <span ng-if="order.original">Original</span>
+                  <span ng-if="!order.original">Copy</span>
+                </td>
+                <td>
+                  <p ng-repeat="item in order.pickrr_dict.item_list">
+                    {{item.item_name}}- {{item.sku}}- {{item.price}}-
+                    {{item.quantity}}
+                    <span
+                      style="float: right; margin-left: 20px; cursor: pointer;"
+                      data-toggle="modal"
+                      data-target="#editModal"
+                      ng-click="openModal(item, 'item')"
+                    >
+                      <i class="zmdi zmdi-edit"></i>
+                    </span>
+                  </p>
+                </td>
                 <td>{{order.pickrr_dict.quantity}}</td>
                 <td>
                   <span ng-if="order.pickrr_dict.cod_amount === 0">
@@ -205,28 +267,43 @@
                   </span>
                 </td>
                 <td>
-                  {{order.pickrr_dict.from_address}} -
-                  {{order.pickrr_dict.from_pincode}}
-                </td>
-                <td>
-                  {{order.pickrr_dict.to_name}}
-                </td>
-                <td>
-                  {{order.pickrr_dict.to_phone_number}}
-                </td>
-                <td>
-                  {{order.pickrr_dict.to_address}} -
-                  {{order.pickrr_dict.to_pincode}}
+                  {{order.pickrr_dict.cod_amount}}
                 </td>
                 <td>{{order.pickrr_dict.invoice_value}}</td>
                 <td>
+                  {{order.pickrr_dict.from_name}} -
+                  {{order.pickrr_dict.from_address}}
+                  {{order.pickrr_dict.from_pincode}} -
+                  {{order.pickrr_dict.from_phone_number}}
+                  <span
+                    style="float: right; margin-left: 20px; cursor: pointer;"
+                    data-toggle="modal"
+                    data-target="#editModal"
+                    ng-click="openModal(order, 'sender')"
+                  >
+                    <i class="zmdi zmdi-edit"></i>
+                  </span>
+                </td>
+                <td>
+                  {{order.pickrr_dict.to_name}} -
+                  {{order.pickrr_dict.to_address}}
+                  {{order.pickrr_dict.to_pincode}} -
+                  {{order.pickrr_dict.to_phone_number}}
+                  <span
+                    style="float: right; margin-left: 20px; cursor: pointer;"
+                    data-toggle="modal"
+                    data-target="#editModal"
+                    ng-click="openModal(order, 'receiver')"
+                  >
+                    <i class="zmdi zmdi-edit"></i>
+                  </span>
+                </td>
+                <td>
                   <md-button
                     class="md-raised md-primary"
-                    ng-click="showPrompt(order)"
-                    data-toggle="modal"
-                    data-target="#exampleModal"
+                    ng-click="cloneOrder(order)"
                   >
-                    Edit
+                    Clone
                   </md-button>
                 </td>
               </tr>
