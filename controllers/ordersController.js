@@ -14,6 +14,7 @@ app.controller("ordersController", function (
   $scope.date;
   $scope.search;
   $scope.orderList = [];
+  $scope.authTokenArray = [];
   $scope.emailList = {};
 
   var headers = {
@@ -30,7 +31,7 @@ app.controller("ordersController", function (
   }).then(function (response) {
     response.json().then(function (response) {
       $scope.account_list = $window.sessionStorage.getItem("account_list");
-      $scope.account = JSON.parse($scope.account_list)
+      $scope.account = JSON.parse($scope.account_list);
       console.log("response==>", response, JSON.parse($scope.account_list));
       $scope.store_name = response.orders.store;
       cfpLoadingBar.complete();
@@ -46,8 +47,14 @@ app.controller("ordersController", function (
   $scope.pushToArray = function (data, value) {
     if (value) {
       $scope.orderList.push(data);
+      $scope.authTokenArray.push(data.auth_token);
     } else {
       $scope.orderList.splice($scope.orderList.indexOf(data), 1);
+      $scope.authTokenArray.splice(
+        $scope.authTokenArray.indexOf(data.auth_token),
+        1
+      );
+      console.log("token", $scope.authTokenArray);
     }
   };
 
@@ -74,10 +81,9 @@ app.controller("ordersController", function (
     var objectToSerialize = {
       order_data: jsonData,
       email_list: $scope.array,
-      auth_token: $scope.account.value,
+      auth_token: $scope.authTokenArray,
       shop_platform: { name: "shopify", store_name: $scope.store_name },
     };
-    console.log("array value==>", $scope.array);
     console.log("postdata==>", objectToSerialize);
     fetch("http://pickrr.com/api/bulk-place-order/", {
       mode: "cors",
