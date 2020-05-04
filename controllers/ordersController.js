@@ -14,9 +14,16 @@ app.controller("ordersController", function (
   $scope.date;
   $scope.search;
   $scope.orderList = [];
-  $scope.authTokenArray = [];
   $scope.emailList = {};
-
+  $scope.accountTokensForFulfilled = [];
+  $scope.account_token_array = JSON.parse(
+    $window.sessionStorage.getItem("account_list")
+  );
+  for (let index = 0; index < $scope.account_token_array.length; index++) {
+    $scope.accountTokensForFulfilled.push(
+      $scope.account_token_array[index].account_token
+    );
+  }
   var headers = {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
@@ -24,44 +31,62 @@ app.controller("ordersController", function (
   };
 
   // <-----GETTING INTIAL ORDERS----->
+
   fetch("http://pickrr.com/plugins/fetch-shop-orders/harish-30/?days=9", {
     method: "GET",
     // mode: "cors",
     cache: "force-cache",
   }).then(function (response) {
     response.json().then(function (response) {
+      $scope.id_list = response.orders.id_list;
+      console.log("order list==>", $scope.id_list);
+
       $scope.account_list = $window.sessionStorage.getItem("account_list");
       $scope.account = JSON.parse($scope.account_list);
-      console.log("response==>", response, JSON.parse($scope.account_list));
+      $scope.account_token = angular.copy($scope.account);
+      $scope.authTokenArray = [];
+
       $scope.store_name = response.orders.store;
+
       cfpLoadingBar.complete();
       $scope.data = response.orders.uorders;
-      $scope.porders = response.orders.porders;
+      // $scope.porders = response.orders.porders;
       $scope.data.forEach(function (obj) {
         obj.original = true;
       });
     });
   });
 
+  
+  $timeout(function () {
+    var req = {
+      auth_list: $scope.accountTokensForFulfilled,
+      id_list: $scope.id_list,
+    };
+    fetch(
+      "https://pickrr.com/api/fetch-fulfilled-user-platform-plugin-data-api/",
+      {
+        method: "POST",
+        cache: "force-cache",
+        body: JSON.stringify(req),
+      }
+    ).then(function (response) {
+      response.json().then(function (response) {
+        console.log("fulfilled", response);
+        $scope.porders = response.order_data;
+        cfpLoadingBar.complete();
+      });
+    });
+  }, 3000);
+
   // <----PUSHING TO ARRAY WHEN SELECTING CHECKBOX------>
   $scope.pushToArray = function (data, value) {
     if (value) {
       $scope.orderList.push(data);
-      $scope.authTokenArray.push(data.auth_token);
     } else {
       $scope.orderList.splice($scope.orderList.indexOf(data), 1);
-      $scope.authTokenArray.splice(
-        $scope.authTokenArray.indexOf(data.auth_token),
-        1
-      );
-      console.log("token", $scope.authTokenArray);
     }
   };
-
-  // <----CONVERTING STRING TO EMAIL LIST----->
-  // $scope.convertStringToArray = function () {
-  //   $scope.array = $scope.emailList.value.split(",");
-  // };
 
   // <----POSTING DATA---->
   $scope.placeOrder = function () {
@@ -70,6 +95,7 @@ app.controller("ordersController", function (
     $scope.array = $scope.emailList.value.split(",");
 
     for (var i = 0; i < $scope.orderList.length; i++) {
+      console.log("account ==>", $scope.account);
       if ($scope.extraFeature.value !== "air") {
         $scope.orderList[i][$scope.extraFeature.value] = true;
         console.log("list==>", $scope.orderList);
@@ -81,7 +107,7 @@ app.controller("ordersController", function (
     var objectToSerialize = {
       order_data: jsonData,
       email_list: $scope.array,
-      auth_token: $scope.authTokenArray,
+      auth_token: $scope.account[0].account_token,
       shop_platform: { name: "shopify", store_name: $scope.store_name },
     };
     console.log("postdata==>", objectToSerialize);

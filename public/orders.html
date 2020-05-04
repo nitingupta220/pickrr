@@ -106,41 +106,6 @@
 
   <md-content>
     <md-tabs md-dynamic-height md-border-bottom>
-      <md-tab label="Fulfilled Orders">
-        <md-content class="md-padding">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col">Pickrr ID</th>
-                <th scope="col">Placed Date</th>
-                <th scope="col">Tracking ID</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="order in porders | filter: search track by $index">
-                <td>{{order.shopify_order_id}}</td>
-                <td>{{order.created_at}}</td>
-                <td>{{order.tracking_number}}</td>
-                <td>
-                  <span ng-if="order.tracking_number !== null">
-                    <md-button
-                      class="md-raised"
-                      ng-href="{{order.tracking_url}}"
-                      target="_blank"
-                    >
-                      Track
-                    </md-button>
-                  </span>
-                  <span ng-if="order.tracking_number == null">
-                    Tracking Id Error
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </md-content>
-      </md-tab>
       <md-tab label="Non Fulfilled Orders">
         <md-content class="md-padding">
           <div class="container-fluid" ng-if="orderList.length > 0">
@@ -305,6 +270,51 @@
                   >
                     Clone
                   </md-button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </md-content>
+      </md-tab>
+      <md-tab label="Fulfilled Orders">
+        <md-content class="md-padding">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Order Id</th>
+                <th scope="col">Sender Details</th>
+                <th scope="col">Receiver Details</th>
+                <th scope="col">Tracking ID</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="order in porders | filter: search track by $index">
+                <td>
+                  {{order.order_id}}
+                </td>
+                <td>
+                  {{order.from_name}} - {{order.from_address}}
+                  {{order.from_pincode}} - {{order.from_phone_number}}
+                </td>
+                <td>
+                  {{order.to_name}} - {{order.to_address}} {{order.to_pincode}}
+                  - {{order.to_phone_number}}
+                </td>
+                <td>{{order.tracking_id}}</td>
+                <td>
+                  <span ng-if="order.tracking_id !== null">
+                    <md-button
+                      class="md-raised"
+                      ng-href="{{order.tracking_url}}"
+                      target="_blank"
+                    >
+                      Track
+                    </md-button>
+                  </span>
+                  <span ng-if="order.tracking_id == null">
+                    Tracking Id Error
+                  </span>
                 </td>
               </tr>
             </tbody>

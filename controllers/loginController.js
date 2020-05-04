@@ -18,7 +18,7 @@ app.controller("loginController", function (
       headers: headers,
       data: { shop_name: $scope.shop_name, shop_token: $scope.shop_token },
     }).then(function (response) {
-      console.log("response==>", response.data.account_list);
+      console.log("response123==>", response.data.account_list);
       $window.sessionStorage.setItem(
         "account_list",
         angular.toJson(response.data.account_list)
