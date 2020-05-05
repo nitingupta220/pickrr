@@ -1,0 +1,32 @@
+{
+  "name": "pickrr",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nitingupta220/pickrr.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nitingupta220/pickrr/issues"
+  },
+  "homepage": "https://github.com/nitingupta220/pickrr#readme",
+  "dependencies": {
+    "@popperjs/core": "^2.4.0",
+    "angular": "^1.7.9",
+    "angular-animate": "^1.7.9",
+    "angular-aria": "^1.7.9",
+    "angular-loading-bar": "^0.9.0",
+    "angular-material": "^1.1.21",
+    "angular-messages": "^1.7.9",
+    "angular-route": "^1.7.9",
+    "bootstrap": "^4.4.1",
+    "jquery": "^3.5.1"
+  }
+}
