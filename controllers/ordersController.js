@@ -32,7 +32,7 @@ app.controller("ordersController", function (
 
   // <-----GETTING INTIAL ORDERS----->
 
-  fetch("http://pickrr.com/plugins/fetch-shop-orders/harish-30/?days=12", {
+  fetch("http://pickrr.com/plugins/fetch-shop-orders/harish-30/?days=12", { 
     method: "GET",
     // mode: "cors",
     cache: "force-cache",
