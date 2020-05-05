@@ -32,14 +32,14 @@ app.controller("ordersController", function (
 
   // <-----GETTING INTIAL ORDERS----->
 
-  fetch("http://pickrr.com/plugins/fetch-shop-orders/harish-30/?days=9", {
+  fetch("http://pickrr.com/plugins/fetch-shop-orders/harish-30/?days=12", {
     method: "GET",
     // mode: "cors",
     cache: "force-cache",
   }).then(function (response) {
     response.json().then(function (response) {
       $scope.id_list = response.orders.id_list;
-      console.log("order list==>", $scope.id_list);
+      console.log("order list==>", response);
 
       $scope.account_list = $window.sessionStorage.getItem("account_list");
       $scope.account = JSON.parse($scope.account_list);

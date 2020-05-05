@@ -28,6 +28,7 @@
     "angular-messages": "^1.7.9",
     "angular-route": "^1.7.9",
     "bootstrap": "^4.4.1",
+    "express": "^4.17.1",
     "jquery": "^3.5.1"
   },
   "devDependencies": {
